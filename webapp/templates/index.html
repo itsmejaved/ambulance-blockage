@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fine List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* General reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #4CAF50;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Button styling */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Image styling */
+        img {
+            width: 120px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        img:hover {
+            transform: scale(1.1);
+        }
+
+        /* Form styling */
+        form {
+            margin: 10px 0;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+
+        textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        /* Delete all fines button styling */
+        .delete-all-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 30px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .delete-all-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            table, th, td {
+                font-size: 0.9rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            button {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Vehicle Fines</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Vehicle ID</th>
+                <th>Timestamp</th>
+                <th>Image</th>
+                <th>Status</th>
+                <th>Appeal</th>
+                <th>Reject</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fine in fines %}
+                <tr>
+                    <td>{{ fine[1] }}</td> <!-- Vehicle ID -->
+                    <td>{{ fine[2] }}</td> <!-- Timestamp -->
+                    <td>
+                        <a href="{{ url_for('static', filename=fine[3]) }}" target="_blank">
+                            <img src="{{ url_for('static', filename=fine[3]) }}" alt="Screenshot">
+                        </a>
+                    </td> <!-- Image -->
+                    <td>{{ fine[4] }}</td> <!-- Status -->
+                    <td>
+                        {% if fine[4] == 'pending' %}
+                            <form action="{{ url_for('appeal', fine_id=fine[0]) }}" method="post">
+                                <textarea name="reason" placeholder="Enter your appeal reason" required></textarea>
+                                <button type="submit">Appeal</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if fine[4] == 'pending' %}
+                            <form action="{{ url_for('reject', fine_id=fine[0]) }}" method="post">
+                                <button type="submit">Reject</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <form action="{{ url_for('confirm_clear_fines') }}" method="post">
+        <button type="submit" class="delete-all-btn">Delete All Fines</button>
+    </form>
+
+</body>
+</html>

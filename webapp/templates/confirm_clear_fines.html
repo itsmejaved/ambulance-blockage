@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Clear All Fines</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .cancel-btn {
+            background-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <h1>Are you sure you want to clear all fines?</h1>
+    <form action="{{ url_for('confirm_clear_fines') }}" method="POST">
+        <button type="submit" class="btn">Yes, Clear All Fines</button>
+    </form>
+    <br><br>
+    <a href="{{ url_for('index') }}">
+        <button class="btn cancel-btn">Cancel</button>
+    </a>
+</body>
+</html>
